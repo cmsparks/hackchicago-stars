@@ -61,7 +61,7 @@ function getCluster(loc, clusters) {
 	var clusterIndex = 0
 	var clusterDistance = euclideanDistance(loc, clusters[cindex].centroid)
 	var newClusterDistance
-	
+
 	for (i = 1; i < clusters.length; i++) {
 		newClusterDistance = euclideanDistance(loc, clusters[i].centroid)
 		if (newClusterDistance < clusterDistance) {
@@ -100,6 +100,42 @@ function allocatePoints(clusters, points) {
 	for(i = 0; i < points.length; i++) {
 		clusters[getCluster(points[i], clusters)].points.push(points[i])
 	}
+}
+
+//returns n clusters
+function cluster(points, n) {
+	//instantiate clusters randomly
+	var clusters = isntantiateClusters(points, n)
+
+	//get the centroids of each cluster
+	var centroids = []
+	for (i = 0; i < clusters.length; i++) {
+		centroids.push(clusters[i].centroid)
+	}
+
+	//get the starting points for each cluster
+	allocatePoints(clusters, points)
+
+	//updates the clusters and records centroids
+	var newCentroids = []
+	for (i = 0; i < clusters.length; i++) {
+		clusters[i].getCentroid()
+		newCentroids.push(clusters[i].centroid)
+	}
+
+	//iterates until no further changes are made
+	while (centroids != newCentroids) {
+		centroids = newCentroids
+
+		allocatePoints(clusters, points)
+
+		newCentroids = []
+		for (i = 0; i < clusters.length; i++) {
+			clusters[i].getCentroid()
+			newCentroids.push(clusters[i].centroid)
+		}
+	}
+
 
 	return clusters
 }
