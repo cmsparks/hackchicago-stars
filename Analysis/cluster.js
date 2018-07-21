@@ -95,6 +95,22 @@ function getCluster(loc, clusters) {
 
 //running through the shit
 
+// attributes is a list of the indices of the attributes to keep
+//makes the array contain only those columns
+function selectAttributes(points, attributes) {
+	var newPoints = []
+	var row
+
+	for (let r = 0; r < points.length; r++) {
+		row = []
+		for (let i = 0; i < attributes.length; i++) {
+			row.push(points[r][attributes[i]])
+		}
+		newPoints.push(row)
+	}
+
+	return newPoints
+}
 
 //scales each attribute so it's from 0 to 1
 function normalizeData(points) {
@@ -203,7 +219,18 @@ function cluster(points, n) {
 
 //test
 
-var points = [[0,0], [1,0], [5,6], [7,9], [2,3], [4,7]]
+var points = []
+var point
+
+for (let i = 0; i < 1000000; i++) {
+	point = []
+	for (let d = 0; d < 5; d++) {
+		point.push(Math.floor(Math.random() * 300))
+	}
+	points.push(point)
+}
+
+points = selectAttributes(points, [0, 2, 4])
 
 var clusters = cluster(points, 2)
 
