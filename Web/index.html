@@ -5,6 +5,13 @@
 		<style>
 			body { margin: 0; }
 			body > canvas { width: 100%; height: 100%; position:absolute; z-index: -1; margin-top: 0; }
+			* {
+				font-family: helvetica;
+			}
+			h3 {
+				text-align: center;
+
+			}
 			#description {
 				position: absolute;
 				color:white;
@@ -36,7 +43,7 @@
 				background-color: white;
 				color: black;
 				border-radius: 5px;
-				margin: 5% 10%;
+				margin: 5%;
 				width: 80%;
 				border:none;
 				padding: 10px;
@@ -51,12 +58,17 @@
 			#menupane {
 				display:none;
 				position:absolute;
-				width:15%;
-				height:250px;
-				margin: 10% 42.5%;
+				width:25%;
+				height:400px;
+				margin: 5% 37.5%;
 				background-color:RGBA(200,200,200,0.5);
 				border-radius:5px;
 				cursor:default;
+				padding:40px;;
+			
+			}
+			input {
+				margin: 0 auto;
 			}
 			#information {
 				grid-area: info;
@@ -78,7 +90,7 @@
 				display:none
 			}
 
-	* {
+	canvas {
 	cursor: none;
 	}
 
@@ -87,11 +99,26 @@
 				width: 100%;
 				font-size: 15pt;
 			}
+
+			#killContainer {
+				position: absolute;
+				background-color: RGBA(200,200,200,.5);
+                                color: black;
+                                border-radius: 5px;
+                        	margin-left: 20px;
+				margin-top: 20px;
+                                width: 7.5%;
+                                border:none;
+                                padding: 10px;
+				font-family: helvetica;
+				display:none;
+			}
 		</style>
 	</head>
 	<body>
 		<img id="imgshitafter" src="Cockpit_infiltrator2.png">
 		<img id="imgshitb4" src="Cockpit_infiltrator.png">
+		<div id="killContainer">Score: <span id="killCount">0</span></div>
 		<div id="XAxis">
 			
 		</div>
@@ -103,6 +130,33 @@
 			<button id="HRswitch" onclick="toggleHR()">Hertzprung-Russel Diagram</button>
 			<button id="ClusteringSwitch" onclick="toggleCluster()">Display ML Clustering Analysis</button>
 			<button id="HRswitch" onclick="toggleGame()">  🛸  </button>
+			<h3>Cluster Selection</h3>
+			<div id='select-attributes'>
+                        <label class="container">
+                                <input id="ci" type="checkbox"> CI
+                                <span class="checkmark"></span>
+                        </label>
+                        <label class="container">
+                                <input id="x" type="checkbox"> x
+                                <span class="checkmark"></span>
+                        </label>
+                        <label class="container">
+                                <input id="y" type="checkbox"> y
+                                <span class="checkmark"></span>
+                        </label>
+                        <label class="container">
+                                <input id="z" type="checkbox"> z
+                                <span class="checkmark"></span>
+                        </label>
+                        <label class="container">
+                                <input id="absmag" type="checkbox"> Abs Mag
+                                <span class="checkmark"></span>
+                        </label>
+                </div>
+                <br></br>
+                <input type="number" id="numClusters" placeholder="Number of Clusters">
+                <br></br>
+                <button onclick="getClusteringParameters()">Generate Cluster</button>
 		</div>
 		<div id="crosshair"></div>
 		<div id="detailPane">
@@ -177,6 +231,7 @@
 		<script type="text/javascript" src="data/starsJSON.json"></script>
 		<script src="MTLLoader.js"> </script>
 		<script src="OBJLoader.js"> </script>
+		<script src="cluster.js"></script>
 		<script src="threex.spaceships/threex.spaceships.js"></script>
 		<script src="script.js"></script>
 	</body>

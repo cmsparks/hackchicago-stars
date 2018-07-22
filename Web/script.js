@@ -5,6 +5,8 @@ let gameMode = false;
 let mouseDown = false;
 let secs = 0
 let enemyList = [];
+let killedEnemies = 0;
+
 
 let starsData = JSON.parse(jsonshit).data;
 let scene, clock, camera, renderer, raycaster, pcBuffer;
@@ -171,9 +173,11 @@ function onWindowResize() {
 function onMouseClick() {
 	if(gameMode === false) {
 		if(intersection!=null){
+			if(!escapeFocus) {
 			focus = false;
 			console.log(starsData[intersection.index]);
 			handleInfo(starsData[intersection.index]);
+			}
 		}
 	}
 	mouseDown = true;
@@ -192,42 +196,42 @@ function generateStarGeometry(data, isClustered, clusterDat) {
 
 	for(let i = 0; i < data.length; i++) {
 		if(isClustered) {
-			if(data[i][7]===0) {
+			if(data[i][data[0].length-1]===0) {
 				colorArr.push(255,0,0)
 			}
-			else if(data[i][7]===1) {
+			else if(data[i][data[0].length-1]===1) {
 				colorArr.push(0,255,0)
                         }
-			else if(data[i][7]===2) {
+			else if(data[i][data[0].length-1]===2) {
 				colorArr.push(0,0,255)
                         }
 
-			else if(data[i][7]===3) {
+			else if(data[i][data[0].length-1]===3) {
 				colorArr.push(255,255,0)
                         }
 
-			else if(data[i][7]===4) {
+			else if(data[i][data[0].length-1]===4) {
 				colorArr.push(0,255,255)
                         }
-                        else if(data[i][7]===5) {
+                        else if(data[i][data[0].length-1]===5) {
                                 colorArr.push(255,0,255)
                         }
-                        else if(data[i][7]===6) {
+                        else if(data[i][data[0].length-1]===6) {
                                 colorArr.push(255,255,255)
                         }
-                        else if(data[i][7]===7) {
+                        else if(data[i][data[0].length-1]===7) {
                                 colorArr.push(255,128,0)
                         }
-                        else if(data[i][7]===8) {
+                        else if(data[i][data[0].length-1]===8) {
                                 colorArr.push(0,128,255)
                         }
-                        else if(data[i][7]===9) {
+                        else if(data[i][data[0].length-1]===9) {
                                 colorArr.push(0,255,128)
                         }
-                        else if(data[i][7]===10) {
+                        else if(data[i][data[0].length-1]===10) {
                                 colorArr.push(128,0,0)
                         }
-                        else if(data[i][7]===11) {
+                        else if(data[i][data[0].length-1]===11) {
                                 colorArr.push(128,128,255)
                         }
 			else {
@@ -280,7 +284,7 @@ function generateStarGeometry(data, isClustered, clusterDat) {
 	//geometry.setIndex(new THREE.BufferAttribute(indicies, 1));
 	//geometry.addGroup(0, indicies.length);
 
-	return geometry;
+	return geometry;2
 }
 
 function generatePointcloud(data) {
@@ -399,16 +403,62 @@ function addSaucer(x,y,z) {
 }
 
 function killEnemy(index) {
+	let enemy = enemyList[index];
 	scene.remove(enemyList[index]);
 	enemyList.slice(index);
 
+	let group = new THREE.Group()
+        console.log('test');
+        var geometry1 = new THREE.SphereGeometry( 5, 32, 32 );
+        var material1 = new THREE.MeshBasicMaterial( {color: 0x888888} );
+        var sphere1 = new THREE.Mesh( geometry1, material1 );
+        sphere1.scale.set(.4,.5,2)
+	sphere1.position.set(.4,0,-.1);
+	sphere1.rotation.set(30,2,5);
+        group.add( sphere1 );
+        var geometry1 = new THREE.SphereGeometry( 5, 32, 32 );
+        var material1 = new THREE.MeshBasicMaterial( {color: 0x888888} );
+        var sphere1 = new THREE.Mesh( geometry1, material1 );
+        sphere1.scale.set(-.4,1,2)
+        sphere1.position.set(2,0,-.1);
+        sphere1.rotation.set(-30,-2,-5);
+        group.add( sphere1 );
+        var geometry1 = new THREE.SphereGeometry( 5, 32, 32 );
+        var material1 = new THREE.MeshBasicMaterial( {color: 0x888888} );
+        var sphere1 = new THREE.Mesh( geometry1, material1 );
+        sphere1.scale.set(-.2,.1,.5)
+        sphere1.position.set(2,0,-.1);
+        sphere1.rotation.set(-30,-2,-5);
+        group.add( sphere1 );
+        var geometry1 = new THREE.SphereGeometry( 5, 32, 32 );
+        var material1 = new THREE.MeshBasicMaterial( {color: 0x888888} );
+        var sphere1 = new THREE.Mesh( geometry1, material1 );
+        sphere1.scale.set(.4,.5,2)
+        sphere1.position.set(.4,0,-.1);
+        sphere1.rotation.set(30,2,5);
+        group.add( sphere1 );
+	var geometry2 = new THREE.SphereGeometry( 5, 32, 32 );
+        var material2 = new THREE.MeshBasicMaterial( {color: 0x6666ff} );
+        var sphere2 = new THREE.Mesh( geometry2, material2 );
+        sphere2.scale.set(.75,.70,.75)
+        sphere2.position.set(0,1.25,0)
+        group.add( sphere2 );
+        group.position.set(enemy.position.x,enemy.position.y,enemy.position.z)
+        scene.add(group);
+
+	addSaucer(200*(Math.random()-.5),200*(Math.random()-.5),200*(Math.random()-.5))
+addSaucer(200*(Math.random()-.5),200*(Math.random()-.5),200*(Math.random()-.5))
+addSaucer(200*(Math.random()-.5),200*(Math.random()-.5),200*(Math.random()-.5))
+	killedEnemies = killedEnemies + 1;
+	document.getElementById('killCount').innerHTML = killedEnemies;
 }
 
 function toggleGame() {
 	console.log('toggle')
 	if(gameMode) {
 		gameMode = false;
-		document.getElementById('imgshitb4').style.display = 'none'
+		document.getElementById('imgshitb4').style.display = 'none';
+		document.getElementById('killCount').style.display = 'none';
 		console.log('endinggame')
 	}
 	else {
@@ -416,6 +466,7 @@ function toggleGame() {
 		console.log('startinggame')
 		//DO INITIALIZATION SHIT
 		document.getElementById('imgshitb4').style.display = 'block';
+		document.getElementById('killCount').style.display = 'block';i
 		addSaucer(100,50,0)
 		addSaucer(0,0,0)
 		addSaucer(-100,250,20)

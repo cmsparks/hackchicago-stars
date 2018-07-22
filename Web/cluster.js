@@ -1,4 +1,3 @@
-const fs = require('fs')
 
 //misc helper functions
 
@@ -355,7 +354,10 @@ function getClusteringParameters() {
 		attributes.push(4)
 	}
 
-	return [attributes, numClusters]
+	console.log('asdfasdfasd')
+	starsData = cluster(starsData,numClusters,attributes).data;
+	console.log(starsData)
+	console.log('job done')
 }
 
 
@@ -378,10 +380,3 @@ var clusters = cluster(points, 5)
 */
 
 
-let stars = JSON.parse(fs.readFileSync('../starsJSON.json', 'utf8'))
-let points = stars.data
-//let header = stars.fields
-
-json = cluster(points, 5, [0,1,2,3,4])
-
-fs.writeFileSync("adsfadfadfs.json", "let jsonshit = '"+JSON.stringify(json)+"'", 'utf8')
