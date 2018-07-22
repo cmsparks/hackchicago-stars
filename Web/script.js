@@ -173,7 +173,7 @@ function onWindowResize() {
 function onMouseClick() {
 	if(gameMode === false) {
 		if(intersection!=null){
-			if(!escapeFocus) {
+			if(escapeFocus) {
 			focus = false;
 			console.log(starsData[intersection.index]);
 			handleInfo(starsData[intersection.index]);
