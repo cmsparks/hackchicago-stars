@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset=utf-8>
+		<style>
+			body { margin: 0; }
+			body > canvas { width: 100%; height: 100%; position:absolute; z-index: -1; margin-top: 0; }
+			#description {
+				position: absolute;
+				color:white;
+				font-family: helvetica;
+			}
+			#detailPane {
+				color:black;
+				position:absolute;
+				font-family: helvetica;
+				display: none;
+				width: 300px;
+				background-color: rgba(220,220,220,0.7);
+				border-radius: 15px;
+				padding: 15px;
+				padding-top: 0;
+			}
+			#HRswitch {
+				background-color: white;
+				color: black;
+				position: absolute;
+				border-radius: 5px;
+				border:none;
+				margin: 15px;
+				padding: 10px;
+			}
+			#display {
+				grid-area: display;
+				width:100%;
+				height:100%;
+			}
+
+			#information {
+				grid-area: info;
+			}
+			.star {
+				
+			}
+			.cmp {
+				
+			}
+			#close{
+				text-align: right;
+				width: 100%;
+				font-size: 15pt;
+			}
+		</style>
+	</head>
+	<body>
+		<div id="XAxis">
+			
+		</div>
+		<div id="YAxis">
+			
+		</div>
+		<div id="description">Sol</div>
+		<button id="HRswitch" onclick="toggleHR()">HR Toggle</button>
+		<div id="detailPane">
+			<div id="information">
+				<div id="close" onclick="closeInfo()">✕</div>
+				<h1 class='name'>Sol</h1>
+				<h2>Stellar Class: <span class='class'>G2V</span></h2>
+				<p>
+					<span class="name">Sol</span> is a <span class="verboseClass">G-Type Main-Sequence Star</span> with a stellar classification of <span class="class">G2V</span>. <span class="name">Sol</span> is <span class="distance">0.000005</span> light years away from Earth.
+				</p>
+				<p>
+					<span class="name">Sol</span>'s temperature is <span class="temperature"></span> Kelvin. It's mass is <span class="mass">1</span> solar masses. <span class="name">Sol's</span> radius is <span class="radius"></span> Solar Radii. <span class="name">Sol</span>'s luminosity is <span class="luminosity"></span> in solar luminosities.
+				</p>
+
+
+				<!--<p>
+					<span class="spectralPeculiarities">Sol has no spectral peculiarities.</span>
+				</p>
+				<div id="relativeSize">
+					<span>Compare With:</span>
+					<select>
+						<option value="sun">The Sun</option>
+						<option value="earth">Earth</option>
+						<option value="big-O">Big O-Type Star</option>
+					</select>
+					<br>
+					<table>
+						<tr>
+							<td></td>
+							<td><span class="name">Sol</span>(<span class="class">G2V</span>)</td>
+							<td>Opt2</td>
+						</tr>
+						<tr>
+							<td>Color Index (BV)</td>
+							<td><span class="colorIndex"></span></td>
+							<td>Opt2</td>
+						</tr>
+						<tr>
+							<td>Temperature (K)</td>
+							<td><span class="temperature"></span></td>
+							<td>Opt2</td>
+						</tr>
+						<tr>
+							<td>Luminosity (L☉)</td>
+							<td><span class="luminosity"></span></td>
+							<td>Opt2</td>
+						</tr>
+						<tr>
+							<td>Distance (Ly)</td>
+							<td><span class="distance"></span></td>
+							<td>Opt2</td>
+						</tr>
+						<tr>
+							<td>Mass (M☉)</td>
+							<td><span class="mass"></span></td>
+							<td>Opt2</td>
+						</tr>
+						<tr>
+							<td>Radius (R☉)</td>
+							<td><span class="radius"></span></td>
+							<td>Opt2</td>
+						</tr>
+					</table>
+				</div>-->
+			</div>
+		</div>
+		<script src="utils/spectralClassifier.js"></script>
+		<script src="utils/three.js"></script>
+		<script src="utils/FirstPersonControls.js"></script>
+		<script src="utils/colorIndex.js"></script>
+		<script src="utils/infoHandler.js"></script>
+		<script type="text/javascript" src="data/starsJSON.json"></script>
+		<script src="script.js"></script>
+	</body>
+</html>

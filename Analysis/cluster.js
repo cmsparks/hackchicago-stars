@@ -264,3 +264,5 @@ json = {
 	'data' : data
 }
 console.log(json)
+
+fs.writeFileSync("adsfadfadfs.json", JSON.stringify(json), 'utf8')
