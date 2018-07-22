@@ -144,7 +144,7 @@ function normalizeData(points) {
 		}
 	}
 
-	return points
+	return [points, mins, maxs]
 }
 
 //creates the clusters based off the list of points given
@@ -180,7 +180,10 @@ function allocatePoints(clusters, points) {
 //returns n clusters
 function cluster(points, n) {
 	//normalize data
-	points = normalizeData(points)
+	nd = normalizeData(points)
+	points = nd[0]
+	mins = nd[1]
+	maxs = nd[2]
 
 	//instantiate clusters randomly
 	var clusters = isntantiateClusters(points, n)
@@ -214,6 +217,15 @@ function cluster(points, n) {
 		}
 	}
 
+
+	//revert the data 
+	for (let c = 0; c < clusters.length; c++) {
+		for (let p = 0; p < clusters[c].points.length; p++) {
+			for (let a = 0; a < clusters[c].points[p].length; a++) {
+				clusters[c].points[p][a] = clusters[c].points[p][a] * (maxs[a] - mins[a]) + mins[a]
+			}
+		}
+	}
 
 	return clusters
 }
