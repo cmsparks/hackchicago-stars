@@ -31,5 +31,5 @@ function queryList(playerDistanceFromEarth, playerInclination, playerRightAscens
 	var angleDifference = getAngleDifference(endChunk)
 	var startInclination = getStartInclination(angleDifference, playerInclination)
 	var startRightAscension = getStartRightAscension(angleDifference, playerRightAscension)
-	return [endChunk - 1, endChunk, startInclination, startInclination + baseAngle, startRightAscension, getStartRightAscension + baseAngle]
+	return [(endChunk - 1) * chunkRadius, endChunk * chunkRadius, startInclination, startInclination + baseAngle, startRightAscension, getStartRightAscension + baseAngle]
 }
