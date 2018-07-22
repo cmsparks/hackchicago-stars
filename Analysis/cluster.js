@@ -285,5 +285,4 @@ console.log(clusters[1].points)*/
 let points = JSON.parse(fs.readFileSync('../starsJSON.json', 'utf8')).data
 
 json = cluster(points, 5, [0,1,2,3,4])
-
-console.log(json)
+fs.writeFileSync("adsfadfadfs.json", JSON.stringify(json), 'utf8')
