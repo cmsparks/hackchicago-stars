@@ -6,7 +6,7 @@ chunkRadius = 1
 
 //gets how many chunks the viewer is away from Earth
 function getChunkLevel(playerDistanceFromEarth) {
-	return Math.ceiling(playerDistanceFromEarth / chunkRadius)
+	return Math.ceil(playerDistanceFromEarth / chunkRadius)
 }
 
 //gets the angle between chunks from Earth's perspective 
@@ -17,19 +17,26 @@ function getAngleDifference(chunkLevel) {
 
 //finds start inclination
 function getStartInclination(angleDifference, playerInclination) {
-	return Math.floor(playerInclination / angleDifference)
+	return angleDifference * Math.floor(playerInclination / angleDifference)
 }
 
 function getStartRightAscension(angleDifference, playerRightAscension) {
-	return Math.floor(playerRightAscension, angleDifference)
+	return angleDifference * Math.floor(playerRightAscension / angleDifference)
 }
 
 //takes in distance, incline, right ascension
-//returns [startChunk, endChunk, startIncline, endIncline, startRA, endRA]
+//returns [startDistance, endDistance, startIncline, endIncline, startRA, endRA]
 function queryList(playerDistanceFromEarth, playerInclination, playerRightAscension) {
 	var endChunk = getChunkLevel(playerDistanceFromEarth)
 	var angleDifference = getAngleDifference(endChunk)
+	console.log(angleDifference)
 	var startInclination = getStartInclination(angleDifference, playerInclination)
 	var startRightAscension = getStartRightAscension(angleDifference, playerRightAscension)
-	return [endChunk - 1, endChunk, startInclination, startInclination + baseAngle, startRightAscension, getStartRightAscension + baseAngle]
+	return [(endChunk - 1) * chunkRadius, endChunk * chunkRadius, startInclination, startInclination + angleDifference, startRightAscension, startRightAscension + angleDifference]
 }
+
+pd = 11.7
+pi = 23
+pra = 143
+
+console.log(queryList(pd,pi,pra))
