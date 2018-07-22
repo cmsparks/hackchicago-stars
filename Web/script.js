@@ -24,12 +24,12 @@ function init() {
 
 	camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 10000 );
 	controls = new THREE.FirstPersonControls( camera );
-	controls.movementSpeed = 100;
+	controls.movementSpeed = 1000;
 	controls.lookSpeed = .3;
 	controls.lookVertical = true;
 
 	pcBuffer = generatePointcloud( starsData );
-	pcBuffer.scale.set( 50,50,50 );
+	pcBuffer.scale.set( 5,5,5 );
 	pcBuffer.position.set( 0,0,0 );
 	pcBuffer.geometry.attributes.color.dynamic = true;
 	pcBuffer.geometry.dynamic = true;
