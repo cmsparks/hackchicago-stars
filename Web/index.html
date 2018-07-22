@@ -10,6 +10,15 @@
 				color:white;
 				font-family: helvetica;
 			}
+			#crosshair {
+				position:absolute;
+				width:4px;
+				height:4px;
+				left:49.5%;
+				top:49.5%;
+				border-radius:5px;
+				background-color:white;
+			}
 			#detailPane {
 				color:black;
 				position:absolute;
@@ -20,22 +29,35 @@
 				border-radius: 15px;
 				padding: 15px;
 				padding-top: 0;
+				cursor:default;
 			}
-			#HRswitch {
+			#detailPane > * {cursor:default;}
+			button {
 				background-color: white;
 				color: black;
-				position: absolute;
 				border-radius: 5px;
+				margin: 5% 10%;
+				width: 80%;
 				border:none;
-				margin: 15px;
 				padding: 10px;
+				cursor:default;
 			}
 			#display {
 				grid-area: display;
 				width:100%;
 				height:100%;
+				cursor:default;
 			}
-
+			#menupane {
+				display:none;
+				position:absolute;
+				width:15%;
+				height:250px;
+				margin: 10% 42.5%;
+				background-color:RGBA(200,200,200,0.5);
+				border-radius:5px;
+				cursor:default;
+			}
 			#information {
 				grid-area: info;
 			}
@@ -45,6 +67,21 @@
 			.cmp {
 				
 			}
+			img {
+				position:absolute;
+				width: 100%;
+			}
+			#imgshitb4 {
+				display: none
+			}
+			#imgshitafter {
+				display:none
+			}
+
+	* {
+	cursor: none;
+	}
+
 			#close{
 				text-align: right;
 				width: 100%;
@@ -53,6 +90,8 @@
 		</style>
 	</head>
 	<body>
+		<img id="imgshitafter" src="Cockpit_infiltrator2.png">
+		<img id="imgshitb4" src="Cockpit_infiltrator.png">
 		<div id="XAxis">
 			
 		</div>
@@ -60,7 +99,12 @@
 			
 		</div>
 		<div id="description">Sol</div>
-		<button id="HRswitch" onclick="toggleHR()">HR Toggle</button>
+		<div id="menupane">
+			<button id="HRswitch" onclick="toggleHR()">Hertzprung-Russel Diagram</button>
+			<button id="ClusteringSwitch" onclick="toggleCluster()">Display ML Clustering Analysis</button>
+			<button id="HRswitch" onclick="toggleGame()">  🛸  </button>
+		</div>
+		<div id="crosshair"></div>
 		<div id="detailPane">
 			<div id="information">
 				<div id="close" onclick="closeInfo()">✕</div>
@@ -131,6 +175,9 @@
 		<script src="utils/colorIndex.js"></script>
 		<script src="utils/infoHandler.js"></script>
 		<script type="text/javascript" src="data/starsJSON.json"></script>
+		<script src="MTLLoader.js"> </script>
+		<script src="OBJLoader.js"> </script>
+		<script src="threex.spaceships/threex.spaceships.js"></script>
 		<script src="script.js"></script>
 	</body>
 </html>

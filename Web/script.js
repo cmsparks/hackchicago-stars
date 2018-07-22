@@ -1,4 +1,10 @@
 let focus = true;
+let escapeFocus = true;
+let isClustered = false;
+let gameMode = false;
+let mouseDown = false;
+let secs = 0
+let enemyList = [];
 
 let starsData = JSON.parse(jsonshit).data;
 let scene, clock, camera, renderer, raycaster, pcBuffer;
@@ -18,12 +24,6 @@ let coords = []
 console.log(bvToRGB(0.656))
 init();
 animate();
-                                instructions.addEventListener( 'click', function ( event ) {
-                                        instructions.style.display = 'none';
-                                        // Ask the browser to lock the pointer
-                                        element.requestPointerLock = element.requestPointerLock || element.mozRequestPointerLock || element.webkitRequestPointerLock;
-                                        element.requestPointerLock();
-                                }, false );
 function init() {
 	scene = new THREE.Scene();
 	clock = new THREE.Clock();
@@ -40,6 +40,7 @@ function init() {
 	pcBuffer.geometry.attributes.color.dynamic = true;
 	pcBuffer.geometry.dynamic = true;
 	scene.add( pcBuffer );
+	
 
 	renderer = new THREE.WebGLRenderer();
 	//050510
@@ -54,29 +55,92 @@ function init() {
 	//scene.add( selector );
 
 	raycaster = new THREE.Raycaster();
-	raycaster.params.Points.threshold = 2;
+	raycaster.params.Points.threshold = 4;
 
 	window.addEventListener( 'resize', onWindowResize, false );
 	document.addEventListener( 'mousemove', onDocumentMouseMove, false );
 	document.addEventListener('mousedown', onMouseClick, false);
+	window.addEventListener("keydown", function (event) {
+  if (event.defaultPrevented) {
+    return; // Do nothing if the event was already processed
+  }
+
+  switch (event.key) {
+    case "Escape":
+	if(focus!=true) {closeInfo()}
+	else {escapeMenu()}
+	break;
+    default:
+      return; // Quit when this doesn't handle the key event.
+  }
+
+  // Cancel the default action to avoid it being handled twice
+  event.preventDefault();
+	}, true);
+	
 	console.log(pcBuffer)
 }
 
+function escapeMenu() {
+	if (escapeFocus) {
+		showEscape();
+	}
+	else {
+		hideEscape();
+	}
+}
+
+function showEscape() {
+	escapeFocus = false;
+	document.getElementById('menupane').style.display = "block"
+}
+
+function hideEscape() {
+	escapeFocus = true;
+	document.getElementById('menupane').style.display = "none"
+	animate()
+}
+
+
 function animate() {
-	if(focus){
+	if(focus && escapeFocus){
 		requestAnimationFrame( animate );
 	}
-	raycaster.setFromCamera( mouse, camera );
-
+	raycaster.setFromCamera( new THREE.Vector2( 0, 0 ), camera );
+	
+	secs = secs+1
+	let sinSm = Math.sin(secs/20);
+	let sinLg = Math.sin(secs/120)
 	let intersections = raycaster.intersectObject( pcBuffer );
 	//console.log(intersections);
 	intersection = ( intersections.length ) > 0 ? intersections[ 0 ] : null;
+	if(mouseDown === false) {document.getElementById('imgshitafter').style.display = "none"}
+	if(gameMode) {
+		//handle shooting
+		if(mouseDown) {
+			for(let i = 0; i < enemyList.length; i++) {
+				let shot = raycaster.intersectObject( enemyList[i], true );
+				if(shot.length > 0){
+					killEnemy(i)
+				}
+			}
+		}
+		for(let i = 0; i < enemyList.length; i++) {
+				let coeff = 1
+				if(i%2 === 0) {coeff=-1}
+                                console.log(enemyList[i].position)
+                                enemyList[i].position.set(enemyList[i].position.x+(coeff*sinSm), enemyList[i].position.y+(coeff*sinSm), enemyList[i].position.z+(coeff*sinLg) );
+                        }
+		//handle movement of enemies	
+
+		//handle detection of player distance
+	}
 
 	if(intersection != null) {
 		infoBox.style.left = (mouse.xpx-300)+"px";
 		infoBox.style.top = (mouse.ypx)+"px";	
-		description.style.left = (5+mouse.xpx)+"px";
-		description.style.top = (mouse.ypx-25)+"px";
+		description.style.left = "50%";
+		description.style.top = "50%";
 		description.innerHTML = starsData[intersection.index][6]+" ("+starsData[intersection.index][5]+")";
 		selector.position.set(intersection.point.x,intersection.point.y,intersection.point.z)
 		selector.position.set(starsData[intersection.index][1]*100,starsData[intersection.index][2]*100,starsData[intersection.index][3]*100)
@@ -89,6 +153,7 @@ function animate() {
 	if(HRToggle) {
 		controls.update( clock.getDelta() );
 	}
+	mouseDown = false;
 }
 
 function onDocumentMouseMove( event ) {
@@ -104,10 +169,16 @@ function onWindowResize() {
 	renderer.setSize( window.innerWidth, window.innerHeight );
 }
 function onMouseClick() {
-	if(intersection!=null){
-		focus = false;
-		console.log(starsData[intersection.index]);
-		handleInfo(starsData[intersection.index]);
+	if(gameMode === false) {
+		if(intersection!=null){
+			focus = false;
+			console.log(starsData[intersection.index]);
+			handleInfo(starsData[intersection.index]);
+		}
+	}
+	mouseDown = true;
+	if(gameMode === true) {
+		document.getElementById('imgshitafter').style.display = "block"
 	}
 }
 
@@ -138,8 +209,29 @@ function generateStarGeometry(data, isClustered, clusterDat) {
 			else if(data[i][7]===4) {
 				colorArr.push(0,255,255)
                         }
+                        else if(data[i][7]===5) {
+                                colorArr.push(255,0,255)
+                        }
+                        else if(data[i][7]===6) {
+                                colorArr.push(255,255,255)
+                        }
+                        else if(data[i][7]===7) {
+                                colorArr.push(255,128,0)
+                        }
+                        else if(data[i][7]===8) {
+                                colorArr.push(0,128,255)
+                        }
+                        else if(data[i][7]===9) {
+                                colorArr.push(0,255,128)
+                        }
+                        else if(data[i][7]===10) {
+                                colorArr.push(128,0,0)
+                        }
+                        else if(data[i][7]===11) {
+                                colorArr.push(128,128,255)
+                        }
 			else {
-				colorArr.push(255,0,255)
+				colorArr.push(255,128,255)
 			}
 		}
 		else {
@@ -192,7 +284,7 @@ function generateStarGeometry(data, isClustered, clusterDat) {
 }
 
 function generatePointcloud(data) {
-	let geometry = generateStarGeometry(data, true);
+	let geometry = generateStarGeometry(data, isClustered);
 	let material = new THREE.PointsMaterial({ size: 7, vertexColors: THREE.VertexColors, map: starTex,transparent: true})
 	material.alphaTest = 0.05;
 	let pointcloud = new THREE.Points( geometry, material )
@@ -257,3 +349,79 @@ function switchToHR() {
 	pcBuffer.scale.set(2,2,2)
 }
 
+
+function toggleCluster() {
+	if(isClustered === false) {
+		enableClustering();
+	}
+	else {
+		disableClustering();
+	}
+}
+
+function enableClustering() {
+	isClustered = true;
+	pcBuffer = generatePointcloud( starsData );
+        pcBuffer.scale.set( 50,50,50 );
+        pcBuffer.position.set( 0,0,0 );
+        pcBuffer.geometry.attributes.color.dynamic = true;
+        pcBuffer.geometry.dynamic = true;
+        scene.add( pcBuffer );
+}
+
+function disableClustering() {
+	isClustered = false;
+	pcBuffer = generatePointcloud( starsData );
+        pcBuffer.scale.set( 50,50,50 );
+        pcBuffer.position.set( 0,0,0 );
+        pcBuffer.geometry.attributes.color.dynamic = true;
+        pcBuffer.geometry.dynamic = true;
+        scene.add( pcBuffer );
+}
+
+function addSaucer(x,y,z) {
+	let group = new THREE.Group()  
+	console.log('test');
+	var geometry1 = new THREE.SphereGeometry( 5, 32, 32 );
+	var material1 = new THREE.MeshBasicMaterial( {color: 0x888888} );
+	var sphere1 = new THREE.Mesh( geometry1, material1 );
+	sphere1.scale.set(2,.5,2)
+	group.add( sphere1 );
+	var geometry2 = new THREE.SphereGeometry( 5, 32, 32 );
+	var material2 = new THREE.MeshBasicMaterial( {color: 0x6666ff} );
+	var sphere2 = new THREE.Mesh( geometry2, material2 );
+	sphere2.scale.set(.75,.70,.75)
+	sphere2.position.set(0,1.25,0)
+	group.add( sphere2 );
+	group.position.set(x,y,z)
+	scene.add(group);
+	enemyList.push(group)
+}
+
+function killEnemy(index) {
+	scene.remove(enemyList[index]);
+	enemyList.slice(index);
+
+}
+
+function toggleGame() {
+	console.log('toggle')
+	if(gameMode) {
+		gameMode = false;
+		document.getElementById('imgshitb4').style.display = 'none'
+		console.log('endinggame')
+	}
+	else {
+		gameMode = true;
+		console.log('startinggame')
+		//DO INITIALIZATION SHIT
+		document.getElementById('imgshitb4').style.display = 'block';
+		addSaucer(100,50,0)
+		addSaucer(0,0,0)
+		addSaucer(-100,250,20)
+		addSaucer(-100,-20,-250)
+		addSaucer(-20,60,-100)
+		addSaucer(20,-120,20)
+	}
+
+}
