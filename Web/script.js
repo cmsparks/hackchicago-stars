@@ -10,26 +10,32 @@ let switchHRTime = 1;
 let selector;
 let starPositions;
 let HRToggle = true;
+let element
 let starTex = new THREE.TextureLoader().load('img/star.png')
 
 let coords = []
 
-
 console.log(bvToRGB(0.656))
 init();
 animate();
+                                instructions.addEventListener( 'click', function ( event ) {
+                                        instructions.style.display = 'none';
+                                        // Ask the browser to lock the pointer
+                                        element.requestPointerLock = element.requestPointerLock || element.mozRequestPointerLock || element.webkitRequestPointerLock;
+                                        element.requestPointerLock();
+                                }, false );
 function init() {
 	scene = new THREE.Scene();
 	clock = new THREE.Clock();
 
 	camera = new THREE.PerspectiveCamera( 75, window.innerWidth / window.innerHeight, 0.1, 10000 );
 	controls = new THREE.FirstPersonControls( camera );
-	controls.movementSpeed = 1000;
+	controls.movementSpeed = 10;
 	controls.lookSpeed = .3;
 	controls.lookVertical = true;
 
 	pcBuffer = generatePointcloud( starsData );
-	pcBuffer.scale.set( 5,5,5 );
+	pcBuffer.scale.set( 50,50,50 );
 	pcBuffer.position.set( 0,0,0 );
 	pcBuffer.geometry.attributes.color.dynamic = true;
 	pcBuffer.geometry.dynamic = true;
@@ -40,11 +46,12 @@ function init() {
 	renderer.setClearColor(0x050510	, 1);
 	renderer.setSize( window.innerWidth, window.innerHeight );
 	document.body.appendChild( renderer.domElement );
+	let element = renderer.domElement;
 
 	let sphereGeometry = new THREE.SphereGeometry( 1, 50, 50 );
 	let sphereMaterial = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
 	selector = new THREE.Mesh( sphereGeometry, sphereMaterial );
-	scene.add( selector );
+	//scene.add( selector );
 
 	raycaster = new THREE.Raycaster();
 	raycaster.params.Points.threshold = 2;
@@ -72,7 +79,7 @@ function animate() {
 		description.style.top = (mouse.ypx-25)+"px";
 		description.innerHTML = starsData[intersection.index][6]+" ("+starsData[intersection.index][5]+")";
 		selector.position.set(intersection.point.x,intersection.point.y,intersection.point.z)
-		selector.position.set(starsData[intersection.index][1]*50,starsData[intersection.index][2]*50,starsData[intersection.index][3]*50)
+		selector.position.set(starsData[intersection.index][1]*100,starsData[intersection.index][2]*100,starsData[intersection.index][3]*100)
 	}
 	else {
 		description.innerHTML = "";
@@ -145,7 +152,6 @@ function generateStarGeometry(data, isClustered, clusterDat) {
 		}
 		colorArr.push(rgb[0],rgb[1],rgb[2]);
 		//}
-		e
 		sizeArr.push((data[i][4]+17)/7);
 
 		posArr.push(data[i][1],data[i][2],data[i][3])

@@ -30,7 +30,7 @@ THREE.FirstPersonControls = function ( object, domElement ) {
 	this.verticalMin = 0;
 	this.verticalMax = Math.PI;
 
-	this.autoSpeedFactor = 0.0;
+	this.autoSpeedFactor = 0;
 
 	this.mouseX = 0;
 	this.mouseY = 0;
@@ -46,11 +46,15 @@ THREE.FirstPersonControls = function ( object, domElement ) {
 	this.moveRight = false;
 	this.momentum = 0
 
+	this.speedFast = false;
 
 	this.mouseDragOn = false;
 
 	this.viewHalfX = 0;
 	this.viewHalfY = 0;
+
+	this.momentumControls = true;
+	this.momentum = 0
 
 	if ( this.domElement !== document ) {
 
@@ -144,6 +148,7 @@ THREE.FirstPersonControls = function ( object, domElement ) {
 
 		switch ( event.keyCode ) {
 
+
 			case 38: /*up*/
 			case 87: /*W*/ this.moveForward = true; break;
 
@@ -205,8 +210,15 @@ THREE.FirstPersonControls = function ( object, domElement ) {
 
 		var actualMoveSpeed = delta * this.movementSpeed;
 
-		if ( this.moveForward || ( this.autoForward && ! this.moveBackward ) ) this.object.translateZ( - ( (0.1*actualMoveSpeed)+this.momentum + this.autoSpeedFactor ) );
-		if ( this.moveBackward ) this.object.translateZ( actualMoveSpeed );
+		if ( this.moveForward || ( this.autoForward && ! this.moveBackward ) ) 
+		{
+			if(this.momentum < 6.5) (this.momentum=this.momentum+0.045);
+			this.object.translateZ( - ( (.1*(actualMoveSpeed))+this.momentum + this.autoSpeedFactor ) );
+		console.log(this.momentum)
+		}
+		if(!this.moveForward) {
+			if(this.momentum >0){this.object.translateZ(-(this.momentum));this.momentum=this.momentum-0.035;}}
+		if ( this.moveBackward ) {this.object.translateZ( actualMoveSpeed ); if(this.momentum > 0){this.momentum=this.momentum-.1;}}
 
 		if ( this.moveLeft ) this.object.translateX( - actualMoveSpeed );
 		if ( this.moveRight ) this.object.translateX( actualMoveSpeed );
