@@ -48,7 +48,7 @@ function euclideanDistance(x, y, elements) {
 	return sum
 }
 
-//classes and helpers
+//CLUSTERING
 
 
 class Cluster {
@@ -80,22 +80,20 @@ class Cluster {
 	}
 }
 
-//returns the id of the cluster with the nearest centroid by euclidean distance
-function getCluster(loc, clusters, elements) {
-	var clusterIndex = 0
-	var clusterDistance = euclideanDistance(loc, clusters[clusterIndex].centroid, elements)
-	var newClusterDistance
-	for (let i = 1; i < clusters.length; i++) {
-		newClusterDistance = euclideanDistance(loc, clusters[i].centroid, elements)
-		if (newClusterDistance < clusterDistance) {
-			clusterIndex = i
-			clusterDistance = newClusterDistance
-		}
-	}
-	return clusterIndex
-}
+//returns the attribute arg for cluster functions based on the
+//strings of which attribues they requested
+ function getAttributeIndices(attributes) {
+ 	var indices = []
+ 	var index
 
-//running through the shit
+ 	for (let i = 0; i < attributes.length; i++) {
+ 		index = header.indexOf(attributes[i])
+ 		if (index != -1) {
+ 			indices.push(index)
+ 		}
+ 	}
+ 	return indices
+ }
 
 // attributes is a list of the indices of the attributes to keep
 //makes the array contain only those columns
@@ -107,6 +105,7 @@ function selectAttributes(points, attributes) {
 	for (let r = 0; r < points.length; r++) {
 		row = []
 		info = []
+		//puts selected attributes at beginning and info at the end
 		for (let i = 0; i < points[r].length; i++) {
 			if (attributes.includes(i)) {
 				row.push(points[r][i])
@@ -185,6 +184,33 @@ function allocatePoints(clusters, points, elements) {
 	}
 }
 
+//returns the id of the cluster with the nearest centroid by euclidean distance
+function getCluster(loc, clusters, elements) {
+	var clusterIndex = 0
+	var clusterDistance = euclideanDistance(loc, clusters[clusterIndex].centroid, elements)
+	var newClusterDistance
+	for (let i = 1; i < clusters.length; i++) {
+		newClusterDistance = euclideanDistance(loc, clusters[i].centroid, elements)
+		if (newClusterDistance < clusterDistance) {
+			clusterIndex = i
+			clusterDistance = newClusterDistance
+		}
+	}
+	return clusterIndex
+}
+
+//reverses the normalizaData function
+function rebuildData(clusters, mins, maxs, elements) {
+	for (let c = 0; c < clusters.length; c++) {
+		for (let p = 0; p < clusters[c].points.length; p++) {
+			for (let a = 0; a < elements; a++) {
+				clusters[c].points[p][a] = clusters[c].points[p][a] * (maxs[a] - mins[a]) + mins[a]
+			}
+		}
+	}
+	return clusters
+}
+
 //concatonates the clusters into one array where each point's final value 
 //says which cluster its in
 function combClusters(clusters) {
@@ -198,7 +224,7 @@ function combClusters(clusters) {
 	return data
 }
 
-//returns n clusters
+//returns json file where each item gains a label
 function cluster(points, n, attributes) {
 	//separate data to analyze from info
 	points = selectAttributes(points, attributes)
@@ -242,15 +268,9 @@ function cluster(points, n, attributes) {
 	}
 
 
-	//revert the data 
-	for (let c = 0; c < clusters.length; c++) {
-		for (let p = 0; p < clusters[c].points.length; p++) {
-			for (let a = 0; a < attributes.length; a++) {
-				clusters[c].points[p][a] = clusters[c].points[p][a] * (maxs[a] - mins[a]) + mins[a]
-			}
-		}
-	}
-
+	//reverts the data back to original form
+	clusters = rebuildData(clusters, mins, maxs, attributes.length)
+	
 	//converts data to exportable json file
 	var json = {
 		'numClusters' : clusters.length,
@@ -258,6 +278,8 @@ function cluster(points, n, attributes) {
 	}
 
 	return json
+
+	//return clusters
 }
 
 
@@ -276,13 +298,13 @@ for (let i = 0; i < 1000000; i++) {
 
 points = selectAttributes(points, [0, 2, 4])
 
-var clusters = cluster(points, 2)
-
-console.log(clusters[0].points)
-console.log(clusters[1].points)*/
+var clusters = cluster(points, 5)
+*/
 
 
-let points = JSON.parse(fs.readFileSync('../starsJSON.json', 'utf8')).data
+let stars = JSON.parse(fs.readFileSync('../starsJSON.json', 'utf8'))
+let points = stars.data
+let header = stars.fields
 
-json = cluster(points, 5, [0,1,2,3,4])
+json = cluster(points, 12, [0,1,2,3,4])
 fs.writeFileSync("adsfadfadfs.json", JSON.stringify(json), 'utf8')
