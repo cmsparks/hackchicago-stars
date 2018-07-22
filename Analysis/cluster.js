@@ -327,6 +327,37 @@ function cluster(points, n, attributes) {
 	//return clusters
 }
 
+function getClusteringParameters() {
+	//collect variables
+	var ci = document.querySelector('#ci').checked;
+	var x = document.querySelector('#x').checked;
+	var y = document.querySelector('#y').checked;
+	var z = document.querySelector('#z').checked;
+	var absmag = document.querySelector('#absmag').checked;
+	var numClusters = document.getElementById("numClusters").value
+	
+	//convert to attribute array
+	var attributes = []
+
+	if (ci) {
+		attributes.push(0)
+	}
+	if (x) {
+		attributes.push(1)
+	}
+	if (y) {
+		attributes.push(2)
+	}
+	if (z) {
+		attributes.push(3)
+	}
+	if (absmag) {
+		attributes.push(4)
+	}
+
+	return [attributes, numClusters]
+}
+
 
 //test
 
@@ -349,7 +380,8 @@ var clusters = cluster(points, 5)
 
 let stars = JSON.parse(fs.readFileSync('../starsJSON.json', 'utf8'))
 let points = stars.data
-let header = stars.fields
+//let header = stars.fields
 
-json = cluster(points, 5, [0,4])
+json = cluster(points, 5, [0,1,2,3,4])
+
 fs.writeFileSync("adsfadfadfs.json", "let jsonshit = '"+JSON.stringify(json)+"'", 'utf8')
