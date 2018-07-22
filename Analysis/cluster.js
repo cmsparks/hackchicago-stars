@@ -3,10 +3,7 @@ const fs = require('fs')
 //misc helper functions
 
 
-function getRandomElement(list) {
-	return list[Math.floor(Math.random() * list.length)]
-}
-
+//returns n distinct indexes for items in an array
 function getNRandomElements(list, n) {
 	var indexs = []
 	var leftoverIndexs = [...Array(list.length).keys()]
@@ -21,14 +18,19 @@ function getNRandomElements(list, n) {
 	return indexs
 }
 
+//checks if each element of each list within two lists are the same
 function listEquals(l1, l2, elements) {
+	//checks if lists are equal length
 	if (l1.length != l2.length) {
 		return false
 	}
+
+	//checks if nested lists are equal
 	for (let i = 0; i < l1.length; i++) {
 		if (l1[1].length != l2[i].length) {
 			return false
 		}
+
 		for (let k = 0; k < elements; k++) {
 			if (l1[i][k] != l2[i][k]) {
 				return false
@@ -38,9 +40,12 @@ function listEquals(l1, l2, elements) {
 	return true
 }
 
+//finds the euclidean distance between two points in an 
+//n-dimensional space
 function euclideanDistance(x, y, elements) {
 	var sum = 0
 	var deltaN
+
 	for (let i = 0; i < elements; i++) {
 		deltaN = x[i] - y[i]
 		sum += deltaN * deltaN
@@ -57,6 +62,7 @@ class Cluster {
 		this.points = []
 		this.id = id
 	}
+
 	//updates the centroid of the cluster
 	getCentroid(elements) {
 		var centroid = []
@@ -154,7 +160,6 @@ function normalizeData(points, elements) {
 }
 
 //creates the clusters based off the list of points given
-//THIS MIGHT BE THE PROBLEM
 function isntantiateClusters(points, n, elements) {
 	var clusters = []
 	var centroid
@@ -177,6 +182,7 @@ function allocatePoints(clusters, points, elements) {
 
 	var cluster
 	var clusterIndex
+
 	//allocates each point
 	for(let i = 0; i < points.length; i++) {
 		cluster = clusters[getCluster(points[i], clusters, elements)]
@@ -189,6 +195,7 @@ function getCluster(loc, clusters, elements) {
 	var clusterIndex = 0
 	var clusterDistance = euclideanDistance(loc, clusters[clusterIndex].centroid, elements)
 	var newClusterDistance
+
 	for (let i = 1; i < clusters.length; i++) {
 		newClusterDistance = euclideanDistance(loc, clusters[i].centroid, elements)
 		if (newClusterDistance < clusterDistance) {
@@ -206,6 +213,41 @@ function rebuildData(clusters, mins, maxs, elements) {
 			for (let a = 0; a < elements; a++) {
 				clusters[c].points[p][a] = clusters[c].points[p][a] * (maxs[a] - mins[a]) + mins[a]
 			}
+		}
+	}
+	return clusters
+}
+
+function reorderAttributes(clusters, attributes) {
+	//collects the complement of attributes
+	infos = []
+	for (let i = 0; i < clusters[0].points[0].length; i++) {
+		if (!attributes.includes(i)) {
+			infos.push(i)
+		}
+	}
+
+	//creates index decode key
+	var row = []
+
+	for (let i = 0; i < attributes.length; i++) {
+		row.push(attributes[i])
+	}
+
+	for (let i = 0; i < infos.length; i++) {
+		row.push(infos[i])
+	}
+
+	var point
+
+	for (let c = 0; c < clusters.length; c++) {
+		for (let p = 0; p < clusters[c].points.length; p++) {
+			point = []
+			for (let d = 0; d < row.length; d++) {
+				point[row[d]] = clusters[c].points[p][d]
+			}
+
+			clusters[c].points[p] = point
 		}
 	}
 	return clusters
@@ -271,6 +313,9 @@ function cluster(points, n, attributes) {
 	//reverts the data back to original form
 	clusters = rebuildData(clusters, mins, maxs, attributes.length)
 	
+	//restores attribute order
+	clusters = reorderAttributes(clusters, attributes)
+
 	//converts data to exportable json file
 	var json = {
 		'numClusters' : clusters.length,
@@ -295,7 +340,7 @@ for (let i = 0; i < 1000000; i++) {
 	}
 	points.push(point)
 }
-
+a
 points = selectAttributes(points, [0, 2, 4])
 
 var clusters = cluster(points, 5)
@@ -305,6 +350,8 @@ var clusters = cluster(points, 5)
 let stars = JSON.parse(fs.readFileSync('../starsJSON.json', 'utf8'))
 let points = stars.data
 let header = stars.fields
+console.log(points)
 
-json = cluster(points, 12, [0,1,2,3,4])
-fs.writeFileSync("adsfadfadfs.json", JSON.stringify(json), 'utf8')
+json = cluster(points, 5, [0,4])
+console.log(json)
+//fs.writeFileSync("adsfadfadfs.json", JSON.stringify(json), 'utf8')
