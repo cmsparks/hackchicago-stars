@@ -1,3 +1,5 @@
+const fs = require('fs')
+
 //misc helper functions
 
 
@@ -216,10 +218,21 @@ function cluster(points, n) {
 	return clusters
 }
 
+function combClusters(clusters) {
+	var data = []
+	for (let i = 0; i < clusters.length; i++) {
+		for (let r = 0; r < clusters[i].points.length; r++) {
+			clusters[i].points[r].push(i)
+			data.push(clusters[i].points[r])
+		}
+	}
+	return data
+}
+
 
 //test
 
-var points = []
+/*var points = []
 var point
 
 for (let i = 0; i < 1000000; i++) {
@@ -235,4 +248,19 @@ points = selectAttributes(points, [0, 2, 4])
 var clusters = cluster(points, 2)
 
 console.log(clusters[0].points)
-console.log(clusters[1].points)
+console.log(clusters[1].points)*/
+
+
+let points = JSON.parse(fs.readFileSync('../starsJSON.json', 'utf8')).data
+points = selectAttributes(points, [0,1,2,3,4])
+
+clusters = cluster(points, 5)
+
+numClusters = clusters.length
+data = combClusters(clusters)
+
+json = {
+	'numClusters' : numClusters,
+	'data' : data
+}
+console.log(json)
