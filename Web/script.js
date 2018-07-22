@@ -458,7 +458,7 @@ function toggleGame() {
 	if(gameMode) {
 		gameMode = false;
 		document.getElementById('imgshitb4').style.display = 'none';
-		document.getElementById('killCount').style.display = 'none';
+		document.getElementById('killContainer').style.display = 'none';
 		console.log('endinggame')
 	}
 	else {
@@ -466,7 +466,7 @@ function toggleGame() {
 		console.log('startinggame')
 		//DO INITIALIZATION SHIT
 		document.getElementById('imgshitb4').style.display = 'block';
-		document.getElementById('killCount').style.display = 'block';i
+		document.getElementById('killContainer').style.display = 'block';
 		addSaucer(100,50,0)
 		addSaucer(0,0,0)
 		addSaucer(-100,250,20)
