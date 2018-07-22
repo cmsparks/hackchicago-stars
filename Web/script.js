@@ -1,6 +1,6 @@
 let focus = true;
 
-let starsData = JSON.parse(starsJSON).data;
+let starsData = JSON.parse(jsonshit).data;
 let scene, clock, camera, renderer, raycaster, pcBuffer;
 let mouse = new THREE.Vector2();
 let intersection = null;
@@ -46,7 +46,7 @@ function init() {
 	renderer.setClearColor(0x050510	, 1);
 	renderer.setSize( window.innerWidth, window.innerHeight );
 	document.body.appendChild( renderer.domElement );
-	let element = renderer.domElement;
+	//let element = renderer.domElement;
 
 	let sphereGeometry = new THREE.SphereGeometry( 1, 50, 50 );
 	let sphereMaterial = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
@@ -120,10 +120,29 @@ function generateStarGeometry(data, isClustered, clusterDat) {
 	let indexed = [];
 
 	for(let i = 0; i < data.length; i++) {
-		//if(isClustered) {
-			
-		//}
-		//else {
+		if(isClustered) {
+			if(data[i][7]===0) {
+				colorArr.push(255,0,0)
+			}
+			else if(data[i][7]===1) {
+				colorArr.push(0,255,0)
+                        }
+			else if(data[i][7]===2) {
+				colorArr.push(0,0,255)
+                        }
+
+			else if(data[i][7]===3) {
+				colorArr.push(255,255,0)
+                        }
+
+			else if(data[i][7]===4) {
+				colorArr.push(0,255,255)
+                        }
+			else {
+				colorArr.push(255,0,255)
+			}
+		}
+		else {
 		let rgb = bvToRGB(data[i][0])
 		rgb[0] /= 255
 		rgb[1] /= 255
@@ -151,7 +170,7 @@ function generateStarGeometry(data, isClustered, clusterDat) {
 			console.log(data[i])
 		}
 		colorArr.push(rgb[0],rgb[1],rgb[2]);
-		//}
+		}
 		sizeArr.push((data[i][4]+17)/7);
 
 		posArr.push(data[i][1],data[i][2],data[i][3])
@@ -173,7 +192,7 @@ function generateStarGeometry(data, isClustered, clusterDat) {
 }
 
 function generatePointcloud(data) {
-	let geometry = generateStarGeometry(data);
+	let geometry = generateStarGeometry(data, true);
 	let material = new THREE.PointsMaterial({ size: 7, vertexColors: THREE.VertexColors, map: starTex,transparent: true})
 	material.alphaTest = 0.05;
 	let pointcloud = new THREE.Points( geometry, material )
@@ -205,7 +224,7 @@ function switchFromHR() {
 		starPositions[i] = pcBuffer.geometry.attributes.position.array[i];
 	}
 	pcBuffer.geometry.attributes.position.needsUpdate = true;
-	pcBuffer.scale.set( 20,20,20 );
+	pcBuffer.scale.set( 50,50,50 );
 	let material = new THREE.PointsMaterial({ size: 7, vertexColors: THREE.VertexColors, map: starTex, transparent: true })
 	material.alphaTest = 0.05;
 	pcBuffer.material = material;
@@ -224,7 +243,7 @@ function switchToHR() {
 		}
 		//y
 		if(starsData[i][4] != null) {
-			pcBuffer.geometry.attributes.position.array[(i*3)+1] = (255*Math.log(starsData[i][4]))/25///10,switchHRTime)
+			pcBuffer.geometry.attributes.position.array[(i*3)+1] = 50-(255*Number(starsData[i][4]))/25///10,switchHRTime)
 		}
 		else{
 			pcBuffer.geometry.attributes.position.array[(i*3)+1] = 1000
