@@ -1,5 +1,13 @@
 # hackchicago-stars
 
+Project for Hack Chicago 2018
+
+## Project Synopsis
+
+Visualizes over 120,000 stars from the HYG Dataset. Theoretically can visualize stars from the Gaia dataset as well, but didn't have time to implement it.
+
+## Querying data from Gaia
+
 Curent Data Query - Modify to the data provider that we are using
 ```
 SELECT TOP 100000 ra,dec,parallax,phot_g_mean_mag,phot_bp_mean_mag,phot_bp_mean_mag
