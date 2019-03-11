@@ -1,6 +1,6 @@
 # hackchicago-stars
 
-Project for Hack Chicago 2018
+Project for Hack Chicago 2018. Hosted on http://cmsparks.com/stars (loads pretty slowly because of a slow server and a large amount of data)
 
 ## Project Synopsis
 
