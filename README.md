@@ -6,6 +6,8 @@ Project for Hack Chicago 2018. Hosted on http://cmsparks.com/stars (loads pretty
 
 Visualizes over 120,000 stars from the HYG Dataset. Theoretically can visualize stars from the Gaia dataset as well, but didn't have time to implement it.
 
+# Notes from the hackathon on GAIA
+
 ## Querying data from Gaia
 
 Curent Data Query - Modify to the data provider that we are using
